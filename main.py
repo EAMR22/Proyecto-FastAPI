@@ -10,7 +10,8 @@ from pydantic import EmailStr
 # FastApi
 from fastapi import FastAPI
 from fastapi import status
-from fastapi import Body, Query, Path, Form, Header, Cookie, UploadFile, File
+from fastapi import HTTPException
+from fastapi import Body, Query, Path, Form, Header, Cookie, UploadFile, File   # Estas son clases de entrada de tipos.
 
 app = FastAPI()
 
@@ -118,6 +119,8 @@ def show_person(
 
 # Validaciones: Path Parameters
 
+persons = [1, 2, 3, 4, 5]
+
 @app.get("/person/detail/{person_id}")
 def show_person(
     person_id: int = Path(
@@ -128,6 +131,11 @@ def show_person(
         example=123
         )
 ):
+    if person_id not in persons:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="This person doesn't exist!!"
+        )
     return {person_id: "It exists!"}
 
 # Validaciones: Request Body
@@ -197,6 +205,6 @@ def post_image(
     return {
         "Filename": image.filename,
         "Format": image.content_type,
-        "Size(kb)": round(len(image.file.read())/1024, ndigits=2)
+        "Size(kb)": round(len(image.file.read())/1024, ndigits=2) 
     }
 
