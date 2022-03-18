@@ -86,9 +86,10 @@ def home():
 # Request and Response Body
 
 @app.post(
-    "/person/new", 
+    path="/person/new", 
     response_model=PersonOut,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    tags=["Persons"]
     )
 def create_person(person: Person = Body(...)):
     return person
@@ -97,7 +98,8 @@ def create_person(person: Person = Body(...)):
 
 @app.get(
     path="/person/detail",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Persons"]
     )
 def show_person(
     name: Optional[str] = Query(
@@ -121,7 +123,10 @@ def show_person(
 
 persons = [1, 2, 3, 4, 5]
 
-@app.get("/person/detail/{person_id}")
+@app.get(
+    path="/person/detail/{person_id}", 
+    tags=["Persons"]
+    )
 def show_person(
     person_id: int = Path(
         ..., 
@@ -140,7 +145,10 @@ def show_person(
 
 # Validaciones: Request Body
 
-@app.put("/person/{person_id}")
+@app.put(
+    path="/person/{person_id}", 
+    tags=["Persons"]
+    )
 def update_person(
     person_id: int = Path(
         ...,
@@ -162,7 +170,8 @@ def update_person(
 @app.post(
     path="/login",
     response_model=LoginOut,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Persons"]
 )
 def login(username: str = Form(...), password: str = Form(...)): 
     return LoginOut(username=username)   # Convierte la clase en una instancia que a la postre termina siendo un JSON.
@@ -207,4 +216,6 @@ def post_image(
         "Format": image.content_type,
         "Size(kb)": round(len(image.file.read())/1024, ndigits=2) 
     }
+
+
 
